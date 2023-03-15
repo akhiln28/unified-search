@@ -50,7 +50,7 @@ struct YoutubeSnippet {
 #[tokio::main]
 async fn main() {
     // https://youtube.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&q=hello&type=video&videoDefinition=high&key=AIzaSyDVR9m1RNWnxr5bCFmJlTfmZ8Whj8LrNWA
-    let youtube_folder = std::env::var("YOUTUBE_FOLDER").unwrap();
+    let youtube_folder = std::env::var("YOUTUBE_FOLDER").expect("YOUTUBE_FOLDER not set");
     let date_iso = chrono::Local::now().format("%Y-%m-%d").to_string() + ".json";
     let youtube_path = PathBuf::from(youtube_folder).join(date_iso);
     let google_search_api_key = std::env::var("GOOGLE_SEARCH_API_KEY").unwrap();
