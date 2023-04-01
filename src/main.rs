@@ -1,8 +1,6 @@
-#[macro_use] extern crate prettytable;
+use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use prettytable::{Table, format};
-use colored::Colorize;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 struct YoutubeSearchResponse {
@@ -46,10 +44,8 @@ struct YoutubeSnippet {
     publish_time: String,
 }
 
-
 #[tokio::main]
 async fn main() {
-    // https://youtube.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&q=hello&type=video&videoDefinition=high&key=AIzaSyDVR9m1RNWnxr5bCFmJlTfmZ8Whj8LrNWA
     let youtube_folder = std::env::var("YOUTUBE_FOLDER").unwrap();
     let date_iso = chrono::Local::now().format("%Y-%m-%d").to_string() + ".json";
     let youtube_path = PathBuf::from(youtube_folder).join(date_iso);
@@ -79,7 +75,7 @@ async fn main() {
         ("q", prompt.as_str()),
         ("type", "video"),
         ("videoDefinition", "high"),
-        ("key", google_search_api_key.as_str())
+        ("key", google_search_api_key.as_str()),
     ];
     let youtube_response: YoutubeSearchResponse = client
         .get(url)
@@ -91,16 +87,21 @@ async fn main() {
         .await
         .unwrap();
     // print!("{:?}", youtube_response);
-    let mut youtube_history: Vec<YoutubeSearchResponse> = serde_json::from_reader(&youtube_file).unwrap_or_default();
+    let mut youtube_history: Vec<YoutubeSearchResponse> =
+        serde_json::from_reader(&youtube_file).unwrap_or_default();
     youtube_history.push(youtube_response.clone());
     serde_json::to_writer_pretty(youtube_file, &youtube_history).unwrap();
-    // print items
-    let mut table = Table::new();
-    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(row!["Title", "Channel", "Link"]);
+    let mut table = comfy_table::Table::new();
+    table
+        .load_preset(comfy_table::presets::UTF8_FULL)
+        .apply_modifier(comfy_table::modifiers::UTF8_ROUND_CORNERS)
+        .set_header(vec!["Title", "Channel", "Link"])
+        .set_content_arrangement(comfy_table::ContentArrangement::Dynamic)
+        .set_width(80);
+
     for item in youtube_response.items {
         let link = format!("https://www.youtube.com/watch?v={}", &item.id.video_id);
-        table.add_row(row![item.snippet.title.magenta(), item.snippet.channel_title.green(), link.blue()]);
+        table.add_row(vec![item.snippet.title, item.snippet.channel_title, link]);
     }
-    table.printstd();
+    println!("{}", table);
 }
