@@ -1,4 +1,3 @@
-use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -46,7 +45,7 @@ struct YoutubeSnippet {
 
 #[tokio::main]
 async fn main() {
-    let youtube_folder = std::env::var("YOUTUBE_FOLDER").unwrap();
+    let youtube_folder = std::env::var("YOUTUBE_FOLDER").expect("YOUTUBE_FOLDER not set");
     let date_iso = chrono::Local::now().format("%Y-%m-%d").to_string() + ".json";
     let youtube_path = PathBuf::from(youtube_folder).join(date_iso);
     let google_search_api_key = std::env::var("GOOGLE_SEARCH_API_KEY").unwrap();
