@@ -1,0 +1,13 @@
+[package]
+name = "unified-search"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-openai = "0.18.3"
+clap = { version = "4.5.1", features = ["derive"] }
+google-generative-ai-rs = "0.2.3"
+sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio"] }
+tokio = { version = "1.36.0", features = ["full"] }
