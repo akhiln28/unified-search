@@ -1,5 +1,6 @@
 [package]
 name = "search-youtube"
+repository = "https://github.com/akhiln28/youtube"
 version = "0.1.0"
 edition = "2021"
 
