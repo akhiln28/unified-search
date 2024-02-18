@@ -1,6 +1,7 @@
 [package]
 name = "search-youtube"
 repository = "https://github.com/akhiln28/youtube"
+description = "A simple command line tool and library to search youtube videos"
 license = "MIT"
 version = "0.1.0"
 edition = "2021"
